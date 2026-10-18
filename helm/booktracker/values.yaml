@@ -1,0 +1,19 @@
+imageRepository: ghcr.io/harii55
+imageTag: latest
+
+frontend:
+  replicas: 2
+
+postgres:
+  user: library
+  password: library
+  database: library
+  storageSize: 1Gi
+
+ingress:
+  className: traefik
+
+autoscaling:
+  minReplicas: 2
+  maxReplicas: 5
+  cpuPercent: 70
