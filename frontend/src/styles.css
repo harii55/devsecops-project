@@ -1,0 +1,167 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: #f4f6f8;
+  color: #1d2733;
+}
+
+.page {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 32px 20px;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 28px;
+}
+
+header p {
+  margin: 6px 0 24px;
+  color: #5b6875;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.card {
+  background: white;
+  border-radius: 10px;
+  padding: 16px 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.card span {
+  display: block;
+  color: #5b6875;
+  font-size: 14px;
+}
+
+.card strong {
+  font-size: 30px;
+}
+
+.add-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.add-form input {
+  flex: 1 1 180px;
+  padding: 10px 12px;
+  border: 1px solid #c9d1da;
+  border-radius: 8px;
+  font-size: 15px;
+}
+
+button {
+  padding: 9px 16px;
+  border: none;
+  border-radius: 8px;
+  background: #2563eb;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  text-transform: capitalize;
+}
+
+.filters {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.filters button {
+  background: #e2e8f0;
+  color: #1d2733;
+}
+
+.filters button.active {
+  background: #1d2733;
+  color: white;
+}
+
+.table-wrap {
+  overflow-x: auto;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 12px 14px;
+  text-align: left;
+  border-bottom: 1px solid #edf1f5;
+  white-space: nowrap;
+}
+
+th {
+  font-size: 13px;
+  color: #5b6875;
+}
+
+.badge {
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+}
+
+.badge.available {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.badge.borrowed {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.actions button {
+  padding: 6px 12px;
+}
+
+.actions .delete {
+  background: #dc2626;
+}
+
+.error {
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.message {
+  color: #5b6875;
+}
+
+@media (max-width: 600px) {
+  .stats {
+    grid-template-columns: 1fr;
+  }
+
+  .add-form button {
+    width: 100%;
+  }
+}
