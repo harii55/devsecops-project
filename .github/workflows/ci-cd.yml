@@ -1,0 +1,76 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+
+      - name: Install backend dependencies
+        run: pip install -r backend/requirements.txt
+
+      - name: Run pytest
+        working-directory: backend
+        run: pytest -v
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
+      - name: Build frontend
+        working-directory: frontend
+        run: npm ci && npm run build
+
+  build-scan-push:
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      matrix:
+        service: [backend, frontend]
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set image name
+        run: echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/booktracker-${{ matrix.service }}:${{ github.sha }}" >> "$GITHUB_ENV"
+
+      - name: Build image
+        run: docker build -t "$IMAGE" ${{ matrix.service }}
+
+      - name: Trivy scan
+        run: |
+          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:0.76.1 \
+            image --exit-code 1 --severity HIGH,CRITICAL --ignore-unfixed "$IMAGE"
+
+      - name: Push image to GHCR
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          docker push "$IMAGE"
+
+  deploy:
+    needs: build-scan-push
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Point Helm values to the new images
+        run: |
+          sed -i "s/^imageTag: .*/imageTag: ${{ github.sha }}/" helm/booktracker/values.yaml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git diff --quiet || git commit -am "deploy: use images ${{ github.sha }} [skip ci]"
+          git pull --rebase
+          git push
