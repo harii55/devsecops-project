@@ -1,0 +1,57 @@
+prometheus:
+  prometheusSpec:
+    serviceMonitorSelectorNilUsesHelmValues: false
+    retention: 2d
+
+alertmanager:
+  enabled: false
+
+grafana:
+  dashboardProviders:
+    dashboardproviders.yaml:
+      apiVersion: 1
+      providers:
+        - name: booktracker
+          folder: Library Book Tracker
+          type: file
+          options:
+            path: /var/lib/grafana/dashboards/booktracker
+  dashboards:
+    booktracker:
+      backend:
+        json: |
+          {
+            "title": "Library Book Tracker - Backend",
+            "refresh": "10s",
+            "time": { "from": "now-30m", "to": "now" },
+            "panels": [
+              {
+                "title": "Requests per second by endpoint",
+                "type": "timeseries",
+                "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 },
+                "datasource": { "type": "prometheus", "uid": "prometheus" },
+                "targets": [{ "expr": "sum by (handler) (rate(http_requests_total{handler!=\"/metrics\"}[1m]))", "legendFormat": "{{handler}}" }]
+              },
+              {
+                "title": "95th percentile latency (seconds)",
+                "type": "timeseries",
+                "gridPos": { "x": 12, "y": 0, "w": 12, "h": 8 },
+                "datasource": { "type": "prometheus", "uid": "prometheus" },
+                "targets": [{ "expr": "histogram_quantile(0.95, sum by (le) (rate(http_request_duration_seconds_bucket[5m])))", "legendFormat": "p95" }]
+              },
+              {
+                "title": "Error responses per second (4xx and 5xx)",
+                "type": "timeseries",
+                "gridPos": { "x": 0, "y": 8, "w": 12, "h": 8 },
+                "datasource": { "type": "prometheus", "uid": "prometheus" },
+                "targets": [{ "expr": "sum by (status) (rate(http_requests_total{status=~\"4xx|5xx\"}[1m]))", "legendFormat": "{{status}}" }]
+              },
+              {
+                "title": "Backend pods",
+                "type": "stat",
+                "gridPos": { "x": 12, "y": 8, "w": 12, "h": 8 },
+                "datasource": { "type": "prometheus", "uid": "prometheus" },
+                "targets": [{ "expr": "count(up{service=\"backend\"} == 1)" }]
+              }
+            ]
+          }
