@@ -174,6 +174,7 @@ Folder: `terraform/`. It uses the official `terraform-aws-modules` for VPC and E
 - VPC `10.0.0.0/16` in `us-east-1` with 2 public subnets and 2 private subnets in two zones, plus one NAT gateway.
 - EKS cluster `booktracker-eks` with one managed node group (3 x `t3.medium`).
 - EKS add-ons: VPC CNI, CoreDNS, kube-proxy, Pod Identity agent, EBS CSI driver (for the database volume) and metrics-server (for the HPA).
+- The EBS CSI driver gets its own IAM role through EKS Pod Identity. My first try gave the policy to the node role, but the driver pods could not reach the node metadata, so the driver kept crashing. Pod Identity fixed it, and only the driver gets EBS permissions instead of every pod on the node.
 
 ```bash
 cd terraform
