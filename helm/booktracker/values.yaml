@@ -1,5 +1,5 @@
 imageRepository: ghcr.io/harii55
-imageTag: e02c60156bab9adf76a134f783fd1443bbb71ef6
+imageTag: 7224f11a1c85cdce829608376f45819669815223
 
 frontend:
   replicas: 2
