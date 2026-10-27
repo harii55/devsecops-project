@@ -1,8 +1,8 @@
 # Library Book Tracker
 
 **Name:** Hariny Patel
-**ID:** 2024eb02494
-**Course:** DevOps Final Capstone (Session 21)
+**Roll No:** 24bcs10407
+**Course:** DevOps Final Capstone
 
 Library Book Tracker is a small web app for a library. A librarian can add books, see which books are available, lend a book to a member and mark it as returned. I built the app first and then took it through the full DevOps flow: tests, Docker, a CI/CD pipeline with a security scan, AWS infrastructure with Terraform, Kubernetes with Helm and Argo CD, and monitoring with Prometheus and Grafana.
 
